@@ -2,10 +2,13 @@ var itemList = document.querySelectorAll('.student-item'),
     itemListArray = [].slice.call(itemList),
     totalItemInList = itemListArray.length,
     totalItemByPage = 10,
-    totalPaginationLinks = Math.ceil(totalItemInList / totalItemByPage),
-    paginationHtml = '',
-    slicedArray = [],
-    paginationSection =  document.getElementById('paginationOutputSection');
+    totalPaginationLinks = Math.ceil(totalItemInList / totalItemByPage),    
+    slicedArray = [];
+
+// Function to print Html
+function printHtml(htmlMarkup, output) {
+    output.innerHTML = htmlMarkup;
+}
 
 // Function to hide items on first load
 function hideListItems(totalToHide) {
@@ -16,15 +19,19 @@ function hideListItems(totalToHide) {
 }
 
 // Function to create pagination links
-function createPaginationLinks (numberOfPageItem) {    
+function addPagination (numberOfPageItem) {
+    var paginationTarget =  document.getElementById('paginationOutputSection'),
+        paginationHtml = '';    
+
     paginationHtml += '<div class="pagination"><ul>';
         for (var i = 1; i <= numberOfPageItem; i += 1) {
             paginationHtml += '<li><a class="pagination-link" href="#">'+i+'</a>';
         }
     paginationHtml += '</div></ul>';
-    paginationSection.innerHTML = paginationHtml;
+    printHtml(paginationHtml, paginationTarget);
 
     var paginationLink = document.querySelectorAll('.pagination-link');
+
     // Event listener to dynamically hide students & create pagination links
     for (var i = 0; i < paginationLink.length;  i+= 1) { 
         paginationLink[i].addEventListener("click", function(event){
@@ -48,6 +55,40 @@ function createPaginationLinks (numberOfPageItem) {
     }
 }
 
+// Function to create searchbar
+function addSearch () {
+    var searchbarTarget =  document.getElementById('searchbarOutput');
+    var searchbarHtml = '';
+
+    searchbarHtml += '<div class="student-search">';
+    searchbarHtml += '<input id="searchInput" placeholder="Search for students...">';
+    searchbarHtml += '<button id="searchBtn">Search</button>';
+    searchbarHtml += '</div>';
+    printHtml(searchbarHtml, searchbarTarget);
+
+    var searchBtn = document.getElementById('searchBtn'),
+        searchInput = document.getElementById('searchInput');
+    var switchBool = true;
+
+    searchBtn.addEventListener("click", function(event){
+        var array = [],
+            searchInputValue = document.getElementById('searchInput').value;
+
+        for(var i = 0; i < itemListArray.length; i += 1) {
+            var obj = {};
+            obj['name'] = itemListArray[i].querySelector('h3').innerText,
+            obj['email'] = itemListArray[i].querySelector('.email').innerText               
+            array.push(obj);
+        }
+
+        if(searchInputValue != '') {
+            console.log('not empty');
+        } else {
+            console.log('empty');
+        }
+    });
+}
+
 // Function to get the item to hide
 function getItemToHide() {
     var visibleItems = document.querySelectorAll('.student-item:not([style="display: none;"])');
@@ -69,7 +110,9 @@ window.addEventListener('load', function(event){
     // We hide list items 
     hideListItems(totalItemByPage);
     // We create and add pagination links
-    createPaginationLinks(totalPaginationLinks);
+    addPagination(totalPaginationLinks);
+    // We create and add search bar
+    addSearch ();
 });
 
 
